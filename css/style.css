@@ -1,5 +1,8 @@
 html { background-color: black; }
-html * { box-sizing: border-box; }
+html * {
+  box-sizing: border-box;
+  position: relative;
+}
 body {}
 
 #scene {
@@ -10,7 +13,7 @@ body {}
   overflow: auto;
   padding: 5vw;
   width: 100vw;
-  -webkit-animation: hue 120s infinite linear;
+  -webkit-animation: hue 240s infinite linear;
 }
 @-webkit-keyframes hue {
   from { -webkit-filter: hue-rotate( 0deg ); }
@@ -27,22 +30,27 @@ h1 {
 }
 
 figure {
-  align-items: center;
-  display: flex;
-  flex-direction: column;
-}
-figure > * {
-  margin-top: 1rem;
-  margin-bottom: 1rem;
+  margin: 1rem auto;
   min-width: 50vw;
   max-width: 80vw;
   width: 500px;
 }
-figcaption img { background: black; }
+
+#image { /* container for image object */
+  background-size: cover;
+}
+img { /* placeholder guy */
+  background: black;
+  box-shadow: inset 0 0 10vw 0 hsla(0,0%,0%,0.5),
+              0.0625em 0.0625em 0.25em hsla(0,0%,0%,0.25);
+  display: block;
+  width: 100%;
+  opacity: 1;
+}
+
 figcaption p {
   margin: 1.5em;
   text-align: center;
-  display: none;
 }
 figcaption span {
   background-color: hsl(0,0%,10%);
@@ -56,7 +64,6 @@ figcaption span {
   text-align: left;
   text-shadow: 0.0625em 0.0625em 0.0625em hsla(0,0%,50%,0.5);
 }
-figure img,
 figcaption span {
   box-shadow: 0.0625em 0.0625em 0.25em hsla(0,0%,0%,0.25);  
 }
