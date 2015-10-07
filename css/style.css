@@ -1,0 +1,62 @@
+html { background-color: black; }
+html * { box-sizing: border-box; }
+body {}
+
+#scene {
+  background-image: radial-gradient( ellipse, hsl(0,50%,30%), hsl(20,50%,10%) );
+  height: 100vh;
+  max-height: 1080px;
+  max-width: 1920px;
+  overflow: auto;
+  padding: 5vw;
+  width: 100vw;
+  -webkit-animation: hue 120s infinite linear;
+}
+@-webkit-keyframes hue {
+  from { -webkit-filter: hue-rotate( 0deg ); }
+  to { -webkit-filter: hue-rotate(-360deg); }
+}
+
+h1 { 
+  color: hsla(0,100%,100%,0.25);
+  font-family: 'Homemade Apple', cursive;
+  font-weight: 400;
+  margin-top: 0;
+  margin-bottom: 5vw;
+  text-align: right;
+}
+
+figure {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+}
+figure > * {
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+  min-width: 50vw;
+  max-width: 80vw;
+  width: 500px;
+}
+figcaption img { background: black; }
+figcaption p {
+  margin: 1.5em;
+  text-align: center;
+  display: none;
+}
+figcaption span {
+  background-color: hsl(0,0%,10%);
+  color: hsla(0,100%,100%,0.67);
+  display: inline-block;
+  font-family: 'Special Elite', cursive;
+  font-weight: 400;
+  letter-spacing: 0.0625em;
+  line-height: 1.4em;
+  padding: 0.5em 1em;
+  text-align: left;
+  text-shadow: 0.0625em 0.0625em 0.0625em hsla(0,0%,50%,0.5);
+}
+figure img,
+figcaption span {
+  box-shadow: 0.0625em 0.0625em 0.25em hsla(0,0%,0%,0.25);  
+}
