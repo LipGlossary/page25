@@ -21,13 +21,10 @@ $(document).ready(function () {
 
   nextImage(index);
   nextLabels(index);
-  $('#image').removeClass('shutter');
-  window.setTimeout(function (done) {
-    $('figcaption').removeClass('shutter');
-    done();
-  }, 1000, function () {
+  window.setTimeout(function () {
+    $('figure').children().removeClass('loading');
     enableClick = true;
-  });
+  }, 3000);
 
   $('#scene').on('click', handleClick);
 });
@@ -39,21 +36,23 @@ function handleClick() {
 
 function loadNext (index) {
   enableClick = false;
-  $('figcaption').addClass('shutter');           // captions out first
-  window.setTimeout(function () {                // after 1s
-    $('img').addClass('shutter');                // shutter image
-    window.setTimeout(function () {              // after 2s
-      nextImage(index);                          // swap image
-      nextLabels(index);                         // swap captions
-      $('img').removeClass('shutter');           // unshutter image
-      window.setTimeout(function (done) {        // after 1s
-        $('figcaption').removeClass('shutter');  // unshutter captions
-        done();
-      }, 1000, function () {                     // delay for caption in & when done
-        enableClick = true;                      // enable click
-      });
-    }, 2000);                                    // delay for image in
-  }, 1000);                                      // delay for image out
+  $('figcaption').addClass('shutter');             // captions out first
+  window.setTimeout(function () {                  // after 2s
+    $('img').addClass('shutter');                  // shutter image
+    window.setTimeout(function () {                // after 2.5s (2 + buffer)
+      nextImage(index);                            // swap image
+      nextLabels(index);                           // swap captions
+      window.setTimeout(function () {              // after 500ms
+        $('img').removeClass('shutter');           // unshutter image
+        window.setTimeout(function () {            // after 2s
+          $('figcaption').removeClass('shutter');  // unshutter captions
+          window.setTimeout(function () {          // after 2s
+            enableClick = true;                    // enable click
+          }, 2000);  // wait for caption in
+        }, 2000);    // lag after image in
+      }, 500);       // wait for swap
+    }, 2500);        // wait for image out
+  }, 2000);          // lag after caption out
   
 }
 
