@@ -1,4 +1,6 @@
+var enableClick = false;
 var index = 10;
+
 var data = {
   '10': [
     'Testing'
@@ -16,38 +18,57 @@ var data = {
 };
 
 $(document).ready(function () {
-  loadNext(index);
-  $('#scene').on('click', function () {
-    if(data[index+1]) loadNext(++index);
+
+  nextImage(index);
+  nextLabels(index);
+  $('#image').removeClass('shutter');
+  window.setTimeout(function (done) {
+    $('figcaption').removeClass('shutter');
+    done();
+  }, 1000, function () {
+    enableClick = true;
   });
+
+  $('#scene').on('click', handleClick);
 });
 
+function handleClick() {
+  if(enableClick && data.hasOwnProperty(index+1))
+    loadNext(++index);
+}
+
 function loadNext (index) {
-  nextImage(index);
-  nextLabels(index);  
+  enableClick = false;
+  $('figcaption').addClass('shutter');           // captions out first
+  window.setTimeout(function () {                // after 1s
+    $('img').addClass('shutter');                // shutter image
+    window.setTimeout(function () {              // after 2s
+      nextImage(index);                          // swap image
+      nextLabels(index);                         // swap captions
+      $('img').removeClass('shutter');           // unshutter image
+      window.setTimeout(function (done) {        // after 1s
+        $('figcaption').removeClass('shutter');  // unshutter captions
+        done();
+      }, 1000, function () {                     // delay for caption in & when done
+        enableClick = true;                      // enable click
+      });
+    }, 2000);                                    // delay for image in
+  }, 1000);                                      // delay for image out
+  
 }
 
 function nextImage (index) {
-  $('img').animate({
-    'opacity': 1
-  }, 1000, function() {
-    $('#image').css({
-      'background-image': 'url(./img/' + index + '.png)'
-    });
-    $('img').animate({'opacity': 0}, 1000);
+  $('#image').css({
+    'background-image': 'url(./img/' + index + '.png)'
   });
 }
 
 function nextLabels (index) {
   var copy = data[index];
-  $('figcaption').fadeOut(1000, function () {
-    $(this).empty();
-    for (var i = 0; i < copy.length; i++) {
-      $(this).append('<p><span>' + copy[i] + '</span></p>');
-    }
-    tweakLabels($(this).find('p'));
-    $(this).fadeIn(1000);
-  });
+  $('figcaption').empty();  
+  for (var i = 0; i < copy.length; i++)
+    $('figcaption').append('<p><span>' + copy[i] + '</span></p>');
+  tweakLabels($('figcaption').find('p'));
 }
 
 function tweakLabels (labels) {
