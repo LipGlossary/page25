@@ -22,11 +22,11 @@ $(document).ready(function () {
   nextImage(index);
   nextLabels(index);
   window.setTimeout(function () {
-    $('#scene').removeClass('loading');
+    $('body').removeClass('loading');
     enableClick = true;
   }, 4000);
 
-  $('#scene').on('click', handleClick);
+  $('body').on('click', handleClick);
 });
 
 function handleClick() {
@@ -36,7 +36,7 @@ function handleClick() {
 
 function loadNext (index) {
   enableClick = false;
-  $('#scene').addClass('disable');
+  $('body').addClass('disable');
   $('figcaption').addClass('shutter');             // captions out first
   window.setTimeout(function () {                  // after 2s
     $('#image').addClass('shutter');                  // shutter image
@@ -49,7 +49,7 @@ function loadNext (index) {
           $('figcaption').removeClass('shutter');  // unshutter captions
           window.setTimeout(function () {          // after 2s
             enableClick = true;                    // enable click
-            $('#scene').removeClass('disable');
+            $('body').removeClass('disable');
           }, 2000);  // wait for caption in
         }, 2000);    // lag after image in
       }, 500);       // wait for swap

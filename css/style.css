@@ -3,20 +3,16 @@ html * {
   box-sizing: border-box;
   position: relative;
 }
+body { cursor: pointer; }
+body.disable { cursor: none; }
 
-#scene {
+#bg {
   background-image: radial-gradient( ellipse, hsl(0,50%,30%), hsl(20,50%,10%) );
-  cursor: pointer;
   height: 100vh;
-  max-height: 1080px;
-  max-width: 1920px;
-  overflow: auto;
   padding: 5vw;
+  position: fixed;
   width: 100vw;
   -webkit-animation: hue 240s infinite linear;
-}
-#scene.disable {
-  cursor: none;
 }
 @-webkit-keyframes hue {
   from { -webkit-filter: hue-rotate( 0deg ); }
@@ -27,8 +23,7 @@ h1 {
   color: hsla(0,100%,100%,0.25);
   font-family: 'Homemade Apple', cursive;
   font-weight: 400;
-  margin-top: 0;
-  margin-bottom: 5vw;
+  margin: 0 5vw 5vw 0;
   text-align: right;
 }
 
@@ -87,7 +82,7 @@ figcaption span {
 #image.shutter:after { opacity: 1; }
 figcaption.shutter   { opacity: 0; }
 
-#scene.loading { cursor: none; }
+.loading body { cursor: none; }
 .loading #image {
   opacity: 0;
   animation: loading 3s ease-in-out 0s 1 forwards;
