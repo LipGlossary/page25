@@ -13,45 +13,75 @@ var data =
   , '12': [ 'This is the third' ]
   };
 
-$(document).ready(function () {
+var start;
+var fi = 0;  // frames index
+var frames = [
+  { wait: 0,
+    func: function () {
+      enableClick = false;
+      $('body').addClass('disable');
+    }
+  },
+  { wait: 500,
+    func: function () { $('figcaption').addClass('shutter'); }
+  },
+  { wait: 2000,
+    func: function () { $('#image').addClass('shutter'); }
+  },
+  { wait: 2500,
+    func: function () {
+      nextImage(index);
+      nextLabels(index);
+    }
+  },
+  { wait: 500,
+    func: function () { $('#image').removeClass('shutter'); }
+  },
+  { wait: 2000,
+    func: function () { $('figcaption').removeClass('shutter'); }
+  },
+  { wait: 2000,
+    func: function () {
+      enableClick = true;
+      $('body').removeClass('disable');
+    }
+  }
+];
 
+$(document).ready(function () {
   nextImage(index);
   nextLabels(index);
-  window.setTimeout(function () {
-    $('body').removeClass('loading');
-    enableClick = true;
-  }, 4000);
-
-  $('body').on('click', handleClick);
+  window.requestAnimationFrame(loading);
 });
 
-function handleClick() {
-  if(enableClick && data.hasOwnProperty(index+1))
-    loadNext(++index);
+function loading(timeStamp) {
+  if(timeStamp < 5000) window.requestAnimationFrame(loading);
+  else {
+    $('body').removeClass('loading');
+    enableClick = true;
+    $('body').on('click', handleClick);
+  }
 }
 
-function loadNext (index) {
-  enableClick = false;
-  $('body').addClass('disable');
-  $('figcaption').addClass('shutter');             // captions out first
-  window.setTimeout(function () {                  // after 2s
-    $('#image').addClass('shutter');                  // shutter image
-    window.setTimeout(function () {                // after 2.5s (2 + buffer)
-      nextImage(index);                            // swap image
-      nextLabels(index);                           // swap captions
-      window.setTimeout(function () {              // after 500ms
-        $('#image').removeClass('shutter');           // unshutter image
-        window.setTimeout(function () {            // after 2s
-          $('figcaption').removeClass('shutter');  // unshutter captions
-          window.setTimeout(function () {          // after 2s
-            enableClick = true;                    // enable click
-            $('body').removeClass('disable');
-          }, 2000);  // wait for caption in
-        }, 2000);    // lag after image in
-      }, 500);       // wait for swap
-    }, 2500);        // wait for image out
-  }, 2000);          // lag after caption out
-  
+function handleClick() {
+  if(enableClick && data.hasOwnProperty(index+1)) {
+    index++;
+    start = performance.now();
+    window.requestAnimationFrame(playFrameQueue);
+  }
+}
+
+function playFrameQueue (timeStamp) {
+  var frame = frames[fi];
+  var wait = frame.wait;
+  if (timeStamp - start <= wait) window.requestAnimationFrame(playFrameQueue);
+  else {
+    frame.func();
+    fi++;
+    start = timeStamp;
+    if (frames[fi]) window.requestAnimationFrame(playFrameQueue);
+    else fi = 0;
+  }
 }
 
 function nextImage (index) {
