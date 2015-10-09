@@ -3,7 +3,10 @@ html * {
   box-sizing: border-box;
   position: relative;
 }
-body { cursor: pointer; }
+body {
+  cursor: pointer;
+}
+body.loading,
 body.disable { cursor: none; }
 
 #bg {

@@ -1,21 +1,17 @@
 var enableClick = false;
 var index = 10;
 
-var data = {
-  '10': [
-    'Testing'
-  , 'testing...'
-  , 'Hm.'
-  , 'This is a longer thing. I want to see what it does when it tries to wrap.'
-  ]
-, '11': [
-    'This is the second one'
-  , 'Double test'
-  ]
-, '12': [
-    'This is the third'
-  ]
-};
+var data =
+  { '10': [ 'Testing'
+          , 'testing...'
+          , 'Hm.'
+          , 'This is a longer thing. I want to see what it does when it tries to wrap.'
+          ]
+  , '11': [ 'This is the second one'
+          , 'Double test'
+          ]
+  , '12': [ 'This is the third' ]
+  };
 
 $(document).ready(function () {
 
