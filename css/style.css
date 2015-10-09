@@ -4,6 +4,7 @@ html * {
   position: relative;
 }
 body {
+  padding: 5vw;
   cursor: pointer;
 }
 body.loading,
@@ -12,8 +13,9 @@ body.disable { cursor: none; }
 #bg {
   background-image: radial-gradient( ellipse, hsl(0,50%,30%), hsl(20,50%,10%) );
   height: 100vh;
-  padding: 5vw;
+  left: 0;
   position: fixed;
+  top: 0;
   width: 100vw;
   -webkit-animation: hue 240s infinite linear;
 }
@@ -26,7 +28,7 @@ h1 {
   color: hsla(0,100%,100%,0.25);
   font-family: 'Homemade Apple', cursive;
   font-weight: 400;
-  margin: 0 5vw 5vw 0;
+  margin: 0 0 5vw;
   text-align: right;
 }
 
