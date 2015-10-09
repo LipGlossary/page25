@@ -52,7 +52,7 @@ figure {
   opacity: 0;
   position: absolute;
   top: 0;
-  transition: opacity 3s ease-in-out 0s;
+  transition: opacity 2s ease-in-out 0s;
   translateZ(0);
   width: 100%;
   z-index: 9001;
@@ -94,7 +94,7 @@ figcaption.shutter   { opacity: 0; }
 }
 .loading figcaption {
   opacity: 0;
-  animation: loading 2s ease-in-out 1s 1 forwards;
+  animation: loading 2s ease-in-out 2s 1 forwards;
 }
 @keyframes loading {
   from { opacity: 0; }
