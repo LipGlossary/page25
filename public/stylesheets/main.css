@@ -1,27 +1,102 @@
-.jumbotron {
-  background: #532F8C;
-  color: white;
-  padding-bottom: 80px; }
-  .jumbotron .btn-primary {
-    background: #845ac7;
-    border-color: #845ac7; }
-    .jumbotron .btn-primary:hover {
-      background: #7646c1; }
-  .jumbotron p {
-    color: #d9ccee;
-    max-width: 75%;
-    margin: 1em auto 2em; }
-  .navbar + .jumbotron {
-    margin-top: -20px; }
-  .jumbotron .lang-logo {
-    display: block;
-    background: #B01302;
-    border-radius: 50%;
-    overflow: hidden;
-    width: 100px;
-    height: 100px;
-    margin: auto;
-    border: 2px solid white; }
-    .jumbotron .lang-logo img {
-      max-width: 100%; }
+html { background-color: black; }
+html * {
+  box-sizing: border-box;
+  position: relative;
+}
+body {
+  padding: 5vw;
+  cursor: pointer;
+}
+body.loading,
+body.disable { cursor: none; }
 
+#bg {
+  background-image: radial-gradient( ellipse, hsl(0,50%,30%), hsl(20,50%,10%) );
+  height: 100vh;
+  left: 0;
+  position: fixed;
+  top: 0;
+  width: 100vw;
+  -webkit-animation: hue 240s infinite linear;
+}
+@-webkit-keyframes hue {
+  from { -webkit-filter: hue-rotate( 0deg ); }
+  to { -webkit-filter: hue-rotate(-360deg); }
+}
+
+h1 { 
+  color: hsla(0,100%,100%,0.25);
+  font-family: 'Homemade Apple', cursive;
+  font-weight: 400;
+  margin: 0 0 5vw;
+  text-align: right;
+}
+
+figure {
+  margin: 1rem auto;
+  min-width: 50vw;
+  max-width: 80vw;
+  width: 500px;
+}
+
+#image {
+  background-size: cover;
+  box-shadow: inset 0 0 10vw 0 hsla(0,0%,0%,0.5),
+              0.0625em 0.0625em 0.25em hsla(0,0%,0%,0.25);
+}
+#image:after {
+  background-color: black;
+  content: '';
+  height: 100%;
+  left: 0;
+  opacity: 0;
+  position: absolute;
+  top: 0;
+  transition: opacity 2s ease-in-out 0s;
+  translateZ(0);
+  width: 100%;
+  z-index: 9001;
+}
+img {
+  display: block;
+  width: 100%;
+}
+
+figcaption {
+  transition: opacity 2s ease-in-out 0s;
+  translateZ(0);
+}
+figcaption p {
+  margin: 1.5em;
+  text-align: center;
+}
+figcaption span {
+  background-color: hsl(0,0%,10%);
+  box-shadow: 0.0625em 0.0625em 0.25em hsla(0,0%,0%,0.25);  
+  color: hsla(0,100%,100%,0.67);
+  display: inline-block;
+  font-family: 'Special Elite', cursive;
+  font-weight: 400;
+  letter-spacing: 0.0625em;
+  line-height: 1.4em;
+  padding: 0.5em 1em;
+  text-align: left;
+  text-shadow: 0.0625em 0.0625em 0.0625em hsla(0,0%,50%,0.5);
+}
+
+#image.shutter:after { opacity: 1; }
+figcaption.shutter   { opacity: 0; }
+
+.loading body { cursor: none; }
+.loading #image {
+  opacity: 0;
+  animation: loading 3s ease-in-out 0s 1 forwards;
+}
+.loading figcaption {
+  opacity: 0;
+  animation: loading 2s ease-in-out 2s 1 forwards;
+}
+@keyframes loading {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
