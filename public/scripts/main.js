@@ -1,17 +1,15 @@
 var enableClick = false;
 var index = 10;
-
-var data =
-  { '10': [ 'Testing'
-          , 'testing...'
-          , 'Hm.'
-          , 'This is a longer thing. I want to see what it does when it tries to wrap.'
-          ]
-  , '11': [ 'This is the second one'
-          , 'Double test'
-          ]
-  , '12': [ 'This is the third' ]
-  };
+var data = {
+  '10': { image: '/images/10.png'
+        , text:
+            [ 'Testing'
+            , 'testing...'
+            , 'Hm.'
+            , 'This is a longer thing. I want to see what it does when it tries to wrap.'
+            ]
+        }
+};
 
 var start;
 var fi = 0;  // frames index
@@ -64,11 +62,29 @@ function loading(timeStamp) {
 }
 
 function handleClick() {
-  if(enableClick && data.hasOwnProperty(index+1)) {
-    index++;
-    start = performance.now();
-    window.requestAnimationFrame(playFrameQueue);
+  if(enableClick) {
+    getNext(++index, data);
   }
+}
+
+function getNext (index, globalData) {
+  $.ajax({ method: 'GET'
+         , url: index
+         , dataType: 'json'
+         , statusCode:
+             { 200: success
+             , 304: success
+             , 204: function (data, textStatus, jqXHR ) {
+                 enableClick = false;
+                 // do nothin'
+               }
+             }
+        });
+  function success (data, textStatus, jqXHR ) {
+     globalData[index] = data;
+     start = performance.now();
+     window.requestAnimationFrame(playFrameQueue);
+   };
 }
 
 function playFrameQueue (timeStamp) {
@@ -86,12 +102,12 @@ function playFrameQueue (timeStamp) {
 
 function nextImage (index) {
   $('#image').css({
-    'background-image': 'url(/images/' + index + '.png)'
+    'background-image': 'url(' + data[index].image + ')'
   });
 }
 
 function nextLabels (index) {
-  var copy = data[index];
+  var copy = data[index].text;
   $('figcaption').empty();  
   for (var i = 0; i < copy.length; i++)
     $('figcaption').append('<p><span>' + copy[i] + '</span></p>');
