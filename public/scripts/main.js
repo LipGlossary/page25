@@ -1,50 +1,51 @@
 var enableClick = false;
 var index = 10;
 var data = {
-  '10': { image: '/images/10.png'
-        , text:
-            [ 'Testing'
-            , 'testing...'
-            , 'Hm.'
-            , 'This is a longer thing. I want to see what it does when it tries to wrap.'
-            ]
-        }
+  '10':
+    { image: '/images/10.png'
+    , text:
+        [ 'Testing'
+        , 'testing...'
+        , 'Hm.'
+        , 'This is a longer thing. I want to see what it does when it tries to wrap.'
+        ]
+    }
 };
 
 var start;
 var fi = 0;  // frames index
-var frames = [
-  { wait: 0,
-    func: function () {
-      enableClick = false;
-      $('body').addClass('disable');
+var frames =
+  [ { wait: 0
+    , func: function () {
+        enableClick = false;
+        $('body').addClass('disable');
+      }
     }
-  },
-  { wait: 500,
-    func: function () { $('figcaption').addClass('shutter'); }
-  },
-  { wait: 2000,
-    func: function () { $('#image').addClass('shutter'); }
-  },
-  { wait: 2500,
-    func: function () {
-      nextImage(index);
-      nextLabels(index);
+  , { wait: 500
+    , func: function () { $('figcaption').addClass('shutter'); }
     }
-  },
-  { wait: 500,
-    func: function () { $('#image').removeClass('shutter'); }
-  },
-  { wait: 2000,
-    func: function () { $('figcaption').removeClass('shutter'); }
-  },
-  { wait: 2000,
-    func: function () {
-      enableClick = true;
-      $('body').removeClass('disable');
+  , { wait: 2000
+    , func: function () { $('#image').addClass('shutter'); }
     }
-  }
-];
+  , { wait: 2500
+    , func: function () {
+        nextImage(index);
+        nextLabels(index);
+      }
+    }
+  , { wait: 500,
+      func: function () { $('#image').removeClass('shutter'); }
+    }
+  , { wait: 2000,
+      func: function () { $('figcaption').removeClass('shutter'); }
+    }
+  , { wait: 2000,
+      func: function () {
+        enableClick = true;
+        $('body').removeClass('disable');
+      }
+    }
+  ];
 
 $(document).ready(function () {
   nextImage(index);
@@ -68,18 +69,20 @@ function handleClick() {
 }
 
 function getNext (index, globalData) {
-  $.ajax({ method: 'GET'
-         , url: index
-         , dataType: 'json'
-         , statusCode:
-             { 200: success
-             , 304: success
-             , 204: function (data, textStatus, jqXHR ) {
-                 enableClick = false;
-                 // do nothin'
-               }
-             }
-        });
+  $.ajax(
+    { method: 'GET'
+    , url: index
+    , dataType: 'json'
+    , statusCode:
+        { 200: success
+        , 304: success
+        , 204: function (data, textStatus, jqXHR ) {
+            enableClick = false;
+            // do nothin'
+          }
+        }
+    }
+  );
   function success (data, textStatus, jqXHR ) {
      globalData[index] = data;
      start = performance.now();
@@ -108,9 +111,10 @@ function nextImage (index) {
 
 function nextLabels (index) {
   var copy = data[index].text;
-  $('figcaption').empty();  
-  for (var i = 0; i < copy.length; i++)
+  $('figcaption').empty();
+  for (var i = 0; i < copy.length; i++) {
     $('figcaption').append('<p><span>' + copy[i] + '</span></p>');
+  }
   tweakLabels($('figcaption').find('p'));
 }
 
