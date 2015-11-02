@@ -21,10 +21,10 @@ var frames =
         $('body').addClass('disable');
       }
     }
-  , { wait: 500
+  , { wait: 0
     , func: function () { $('figcaption').addClass('shutter'); }
     }
-  , { wait: 2000
+  , { wait: 1000
     , func: function () { $('#image').addClass('shutter'); }
     }
   , { wait: 2500
@@ -36,7 +36,7 @@ var frames =
   , { wait: 500,
       func: function () { $('#image').removeClass('shutter'); }
     }
-  , { wait: 2000,
+  , { wait: 1000,
       func: function () { $('figcaption').removeClass('shutter'); }
     }
   , { wait: 2000,
