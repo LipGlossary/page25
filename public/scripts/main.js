@@ -85,6 +85,8 @@ function getNext (index, globalData) {
   );
   function success (data, textStatus, jqXHR ) {
      globalData[index] = data;
+     // TODO: Change address bar
+     // TODO: window.history.pushState({}, 'page25', index);
      start = performance.now();
      window.requestAnimationFrame(playFrameQueue);
    };

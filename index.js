@@ -15,13 +15,16 @@ app.get('/', function(request, response) {
 });
 
 app.get(/\d\d/, function (req, res) {
-  // TODO: If request is for JSON, give JSON, else give HTML
-
   var index = req.url.substring(1);
   if (data[index]) {
-    res.json({ image: '/images/' + index + '.png'
-             , text: data[index]
-            });
+    if(req.headers.accept.includes('json')) {
+      res.json({ image: '/images/' + index + '.png'
+               , text: data[index]
+              });
+    } else {
+      // TODO: fix view layout template junk to render this
+      // TODO: res.send()
+    }
   } else {
     res.status(204).json({});
   }
