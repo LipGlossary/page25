@@ -96,10 +96,11 @@ function playFrameQueue (timeStamp) {
   if (timeStamp - start <= wait) window.requestAnimationFrame(playFrameQueue);
   else {
     frame.func();
-    fi++;
-    start = timeStamp;
-    if (frames[fi]) window.requestAnimationFrame(playFrameQueue);
-    else fi = 0;
+    if (frames[++fi]) {
+      start = timeStamp;
+      window.requestAnimationFrame(playFrameQueue);
+    }
+    else { fi = 0; }
   }
 }
 
