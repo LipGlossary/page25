@@ -1,16 +1,6 @@
 var enableClick = false;
-var index = 10;
-var data = {
-  '10':
-    { image: '/images/10.png'
-    , text:
-        [ 'Testing'
-        , 'testing...'
-        , 'Hm.'
-        , 'This is a longer thing. I want to see what it does when it tries to wrap.'
-        ]
-    }
-};
+var index = '';
+var data = {};
 
 var start;
 var fi = 0;  // frames index
@@ -48,8 +38,8 @@ var frames =
   ];
 
 $(document).ready(function () {
-  nextImage(index);
-  nextLabels(index);
+  index = window.location.pathname.substring(1);
+  tweakLabels($('figcaption').find('p'));
   window.requestAnimationFrame(loading);
 });
 

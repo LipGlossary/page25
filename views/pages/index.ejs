@@ -1,7 +1,13 @@
 <!DOCTYPE html>
 <html>
 <head>
+
   <% include ../partials/head.ejs %>
+
+  <style>
+    #image { background-image: url(<%= image %>); }
+  </style>
+
 </head>
 <body class="loading">
 
@@ -9,7 +15,11 @@
 </div>
 <figure>
   <div id="image"><img src="/images/1x1.png" /></div>
-  <figcaption></figcaption>
+  <figcaption>
+    <% for (var i = 0; i < text.length; i++) { %>
+      <p><span><%= text[i] %></span></p>
+    <% } %>
+  </figcaption>
 </figure>
 
 </body>

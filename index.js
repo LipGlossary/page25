@@ -10,20 +10,22 @@ app.use(express.static(__dirname + '/public'));
 app.set('views', __dirname + '/views');
 app.set('view engine', 'ejs');
 
-app.get('/', function(request, response) {
-  response.render('pages/index');
+app.get('/', function(req, res) {
+  res.redirect('/10');
 });
 
 app.get(/\d\d/, function (req, res) {
   var index = req.url.substring(1);
   if (data[index]) {
-    if(req.headers.accept.includes('json')) {
-      res.json({ image: '/images/' + index + '.png'
-               , text: data[index]
-              });
+    var locals =
+      { index: index
+      , image: '/images/' + index + '.png'
+      , text : data[index]
+      };
+    if(req.headers.accept.includes('application/json')) {
+      res.json(locals);
     } else {
-      // TODO: fix view layout template junk to render this
-      // TODO: res.send()
+      res.render('pages/index', locals);
     }
   } else {
     res.status(204).json({});
