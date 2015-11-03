@@ -2,6 +2,15 @@ var enableClick = false;
 var index = '';
 var data = {};
 
+window.onpopstate = function (event) {
+  if ( event.state ) { index = event.state.index; }
+  else {
+    index = '10';
+    window.history.pushState(null, 'page25', '/10');
+  }
+  getNext(index, data);
+};
+
 var start;
 var fi = 0;  // frames index
 var frames =
@@ -75,8 +84,7 @@ function getNext (index, globalData) {
   );
   function success (data, textStatus, jqXHR ) {
      globalData[index] = data;
-     // TODO: Change address bar
-     // TODO: window.history.pushState({}, 'page25', index);
+     window.history.pushState({index: index}, 'page25', '/' + index);
      start = performance.now();
      window.requestAnimationFrame(playFrameQueue);
    };
