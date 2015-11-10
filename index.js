@@ -22,7 +22,7 @@ app.get(/\d\d/, function (req, res) {
       , image: '/images/' + index + '.png'
       , text : data[index]
       };
-    if(req.headers.accept.includes('application/json')) {
+    if(req.headers.accept.match(/application\/json/)) {
       res.json(locals);
     } else {
       res.render('pages/index', locals);
