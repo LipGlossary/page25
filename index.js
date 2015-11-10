@@ -10,18 +10,23 @@ app.use(express.static(__dirname + '/public'));
 app.set('views', __dirname + '/views');
 app.set('view engine', 'ejs');
 
-app.get('/', function(request, response) {
-  response.render('pages/index');
+app.get('/', function(req, res) {
+  res.redirect('/10');
 });
 
 app.get(/\d\d/, function (req, res) {
-  // TODO: If request is for JSON, give JSON, else give HTML
-
   var index = req.url.substring(1);
   if (data[index]) {
-    res.json({ image: '/images/' + index + '.png'
-             , text: data[index]
-            });
+    var locals =
+      { index: index
+      , image: '/images/' + index + '.png'
+      , text : data[index]
+      };
+    if(req.headers.accept.includes('application/json')) {
+      res.json(locals);
+    } else {
+      res.render('pages/index', locals);
+    }
   } else {
     res.status(204).json({});
   }

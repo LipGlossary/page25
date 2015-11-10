@@ -1,15 +1,14 @@
 var enableClick = false;
-var index = 10;
-var data = {
-  '10':
-    { image: '/images/10.png'
-    , text:
-        [ 'Testing'
-        , 'testing...'
-        , 'Hm.'
-        , 'This is a longer thing. I want to see what it does when it tries to wrap.'
-        ]
-    }
+var index = '';
+var data = {};
+
+window.onpopstate = function (event) {
+  if ( event.state ) { index = event.state.index; }
+  else {
+    index = '10';
+    window.history.pushState(null, 'page25', '/10');
+  }
+  getNext(index, data);
 };
 
 var start;
@@ -21,10 +20,10 @@ var frames =
         $('body').addClass('disable');
       }
     }
-  , { wait: 500
+  , { wait: 0
     , func: function () { $('figcaption').addClass('shutter'); }
     }
-  , { wait: 2000
+  , { wait: 1000
     , func: function () { $('#image').addClass('shutter'); }
     }
   , { wait: 2500
@@ -36,7 +35,7 @@ var frames =
   , { wait: 500,
       func: function () { $('#image').removeClass('shutter'); }
     }
-  , { wait: 2000,
+  , { wait: 1000,
       func: function () { $('figcaption').removeClass('shutter'); }
     }
   , { wait: 2000,
@@ -48,8 +47,8 @@ var frames =
   ];
 
 $(document).ready(function () {
-  nextImage(index);
-  nextLabels(index);
+  index = window.location.pathname.substring(1);
+  tweakLabels($('figcaption').find('p'));
   window.requestAnimationFrame(loading);
 });
 
@@ -85,6 +84,7 @@ function getNext (index, globalData) {
   );
   function success (data, textStatus, jqXHR ) {
      globalData[index] = data;
+     window.history.pushState({index: index}, 'page25', '/' + index);
      start = performance.now();
      window.requestAnimationFrame(playFrameQueue);
    };
@@ -96,10 +96,11 @@ function playFrameQueue (timeStamp) {
   if (timeStamp - start <= wait) window.requestAnimationFrame(playFrameQueue);
   else {
     frame.func();
-    fi++;
-    start = timeStamp;
-    if (frames[fi]) window.requestAnimationFrame(playFrameQueue);
-    else fi = 0;
+    if (frames[++fi]) {
+      start = timeStamp;
+      window.requestAnimationFrame(playFrameQueue);
+    }
+    else { fi = 0; }
   }
 }
 
