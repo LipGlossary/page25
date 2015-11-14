@@ -24,14 +24,6 @@ body.disable { cursor: none; }
   to { -webkit-filter: hue-rotate(-360deg); }
 }
 
-h1 { 
-  color: hsla(0,100%,100%,0.25);
-  font-family: 'Homemade Apple', cursive;
-  font-weight: 400;
-  margin: 0 0 5vw;
-  text-align: right;
-}
-
 figure {
   margin: 1rem auto;
   min-width: 50vw;
@@ -53,7 +45,7 @@ figure {
   opacity: 0;
   position: absolute;
   top: 0;
-  transition: opacity 2s ease-in-out 0s;
+  transition: opacity 1s ease-in-out 0s;
   translateZ(0);
   width: 100%;
   z-index: 3;
@@ -64,7 +56,7 @@ img {
 }
 
 figcaption {
-  transition: opacity 2s ease-in-out 0s;
+  transition: opacity 1s ease-in-out 0s;
   translateZ(0);
   z-index: 1;
 }
@@ -74,10 +66,10 @@ figcaption p {
 }
 figcaption span {
   background-color: hsl(0,0%,10%);
-  box-shadow: 0.0625em 0.0625em 0.25em hsla(0,0%,0%,0.25);  
+  box-shadow: 0.0625em 0.0625em 0.25em hsla(0,0%,0%,0.25);
   color: hsla(0,100%,100%,0.67);
   display: inline-block;
-  font-family: 'Special Elite', cursive;
+  font-family: 'Special Elite', monospace;
   font-weight: 400;
   letter-spacing: 0.0625em;
   line-height: 1.4em;
@@ -92,11 +84,11 @@ figcaption.shutter   { opacity: 0; }
 .loading body { cursor: none; }
 .loading #image {
   opacity: 0;
-  animation: loading 3s ease-in-out 0s 1 forwards;
+  animation: loading 3s ease-in-out 1s 1 forwards;
 }
 .loading figcaption {
   opacity: 0;
-  animation: loading 2s ease-in-out 2s 1 forwards;
+  animation: loading 2s ease-in-out 3s 1 forwards;
 }
 @keyframes loading {
   from { opacity: 0; }

@@ -5,8 +5,8 @@ var data = {};
 window.onpopstate = function (event) {
   if ( event.state ) { index = event.state.index; }
   else {
-    index = '10';
-    window.history.pushState(null, 'page25', '/10');
+    index = '100';
+    window.history.pushState(null, 'page25', '/100');
   }
   getNext(index, data);
 };
@@ -23,10 +23,10 @@ var frames =
   , { wait: 0
     , func: function () { $('figcaption').addClass('shutter'); }
     }
-  , { wait: 1000
+  , { wait: 500
     , func: function () { $('#image').addClass('shutter'); }
     }
-  , { wait: 2500
+  , { wait: 1500
     , func: function () {
         nextImage(index);
         nextLabels(index);
@@ -35,10 +35,10 @@ var frames =
   , { wait: 500,
       func: function () { $('#image').removeClass('shutter'); }
     }
-  , { wait: 1000,
+  , { wait: 500,
       func: function () { $('figcaption').removeClass('shutter'); }
     }
-  , { wait: 2000,
+  , { wait: 1500,
       func: function () {
         enableClick = true;
         $('body').removeClass('disable');
@@ -84,7 +84,7 @@ function getNext (index, globalData) {
   );
   function success (data, textStatus, jqXHR ) {
      globalData[index] = data;
-     window.history.pushState({index: index}, 'page25', '/' + index);
+     window.history.pushState({index: index}, 'page25', `/${index}`);
      start = performance.now();
      window.requestAnimationFrame(playFrameQueue);
    };
@@ -106,7 +106,7 @@ function playFrameQueue (timeStamp) {
 
 function nextImage (index) {
   $('#image').css({
-    'background-image': 'url(' + data[index].image + ')'
+    'background-image': `url(${data[index].image})`
   });
 }
 
@@ -114,7 +114,7 @@ function nextLabels (index) {
   var copy = data[index].text;
   $('figcaption').empty();
   for (var i = 0; i < copy.length; i++) {
-    $('figcaption').append('<p><span>' + copy[i] + '</span></p>');
+    $('figcaption').append(`<p><span>${copy[i]}</span></p>`);
   }
   tweakLabels($('figcaption').find('p'));
 }
@@ -124,14 +124,14 @@ function tweakLabels (labels) {
     var translate = getRandTranslate();
     var rotate = getRandRotate();
     $(this).css({
-      'transform': 'translate(' + translate + ') rotate(' + rotate + ')'
+      'transform': `translate(${translate}) rotate(${rotate})`
     });
   });
 }
 
 function getRandTranslate () {
-  return Math.random() * 50 - 25 + '%';
+  return `${Math.random() * 50 - 25}%`;
 }
 function getRandRotate () {
-  return Math.random() * 5 - 2.5 + 'deg';
+  return `${Math.random() * 5 - 2.5}deg`;
 }
