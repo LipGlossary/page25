@@ -5,8 +5,8 @@ var data = {};
 window.onpopstate = function (event) {
   if ( event.state ) { index = event.state.index; }
   else {
-    index = '10';
-    window.history.pushState(null, 'page25', '/10');
+    index = '100';
+    window.history.pushState(null, 'page25', '/100');
   }
   getNext(index, data);
 };

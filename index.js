@@ -11,10 +11,10 @@ app.set('views', __dirname + '/views');
 app.set('view engine', 'ejs');
 
 app.get('/', function(req, res) {
-  res.redirect('/10');
+  res.redirect('/100');
 });
 
-app.get(/\d\d/, function (req, res) {
+app.get(/\d\d\d/, function (req, res) {
   var index = req.url.substring(1);
   if (data[index]) {
     var locals =
