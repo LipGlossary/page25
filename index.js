@@ -19,7 +19,7 @@ app.get(/\d\d\d/, function (req, res) {
   if (data[index]) {
     var locals =
       { index: index
-      , image: `/images/${index}.jpg`
+      , image: '/images/' + index + '.jpg'
       , text : data[index]
       };
     if(req.headers.accept.match(/application\/json/)) {
