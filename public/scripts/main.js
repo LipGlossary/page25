@@ -1,6 +1,9 @@
-var enableClick = false;
 var index = '';
-var data = {};
+var data  = {};
+
+var enableClick = false;
+var shutterDone = false;
+var loadDone    = false;
 
 window.onpopstate = function (event) {
   if ( event.state ) { index = event.state.index; }
@@ -11,45 +14,30 @@ window.onpopstate = function (event) {
   getNext(index, data);
 };
 
-var start;
-var fi = 0;  // frames index
-var frames =
-  [ { wait: 0
-    , func: function () {
-        enableClick = false;
-        $('body').addClass('disable');
-      }
-    }
-  , { wait: 0
-    , func: function () { $('figcaption').addClass('shutter'); }
-    }
-  , { wait: 500
-    , func: function () { $('#image').addClass('shutter'); }
-    }
-  , { wait: 1500
-    , func: function () {
-        nextImage(index);
-        nextLabels(index);
-      }
-    }
-  , { wait: 500,
-      func: function () { $('#image').removeClass('shutter'); }
-    }
-  , { wait: 500,
-      func: function () { $('figcaption').removeClass('shutter'); }
-    }
-  , { wait: 1500,
-      func: function () {
-        enableClick = true;
-        $('body').removeClass('disable');
-      }
-    }
-  ];
-
 $(document).ready(function () {
+
   index = window.location.pathname.substring(1);
   tweakLabels($('figcaption').find('p'));
   window.requestAnimationFrame(loading);
+
+  $('#image').on('animationend webkitAnimationEnd MSAnimationEnd oAnimationEnd',
+                 '.shutter',
+                 function () {
+    if (loadDone) { swap(index); }
+    else { shutterDone = true; }
+  });
+
+  $('.new-photo').on('load', function () {
+    if (shutterDone) { swap(index); }
+    else { loadDone = true; }
+  });
+
+  $('body').on('animationend webkitAnimationEnd MSAnimationEnd oAnimationEnd',
+               '.unshutter',
+               function () {
+    enableClick = true;
+    $('body').removeClass('disable');
+  });
 });
 
 function loading(timeStamp) {
@@ -61,6 +49,8 @@ function loading(timeStamp) {
   }
 }
 
+// TODO: Change this functionality to delegated events rather than tracking
+// state here
 function handleClick() {
   if(enableClick) {
     getNext(++index, data);
@@ -86,28 +76,25 @@ function getNext (index, globalData) {
      globalData[index] = data;
      window.history.pushState({index: index}, 'page25', '/' + index);
      start = performance.now();
-     window.requestAnimationFrame(playFrameQueue);
+     window.requestAnimationFrame(shutter);
    };
 }
 
-function playFrameQueue (timeStamp) {
-  var frame = frames[fi];
-  var wait = frame.wait;
-  if (timeStamp - start <= wait) window.requestAnimationFrame(playFrameQueue);
-  else {
-    frame.func();
-    if (frames[++fi]) {
-      start = timeStamp;
-      window.requestAnimationFrame(playFrameQueue);
-    }
-    else { fi = 0; }
-  }
+function shutter (timeStamp) {
+  enableClick = false;
+  $('body').addClass('disable');
+  var img = $('<img src="' + data[index].image + '" class="new-photo" />');
+  $('#image').append(img);
+  $('figcaption, #image').addClass('shutter');
 }
 
-function nextImage (index) {
-  $('#image').css({
-    'background-image': 'url(' + data[index].image + ')'
-  });
+function swap (timeStamp) {
+  loadDone = false;
+  shutterDone = false;
+  $('.old-photo').remove();
+  $('.new-photo').addClass('old-photo').removeClass('new-photo');
+  nextLabels(index);
+  $('#image, figcaption').addClass('unshutter').removeClass('shutter');
 }
 
 function nextLabels (index) {

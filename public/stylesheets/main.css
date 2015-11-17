@@ -1,3 +1,13 @@
+/*  LAYERS
+2: #image
+   6: shutter
+   5: photo out
+   4: photo in
+   3: placeholder
+1: figcaption
+*/
+
+
 html { background-color: black; }
 html * {
   box-sizing: border-box;
@@ -48,15 +58,18 @@ figure {
   transition: opacity 1s ease-in-out 0s;
   translateZ(0);
   width: 100%;
-  z-index: 3;
+  z-index: 6;
 }
 img {
   display: block;
   width: 100%;
 }
+.old-photo   { z-index: 5; }
+.new-photo   { z-index: 4; }
+.placeholder { z-index: 3; }
 
 figcaption {
-  transition: opacity 1s ease-in-out 0s;
+  transition: opacity 1s ease-in-out 0.5s;
   translateZ(0);
   z-index: 1;
 }
