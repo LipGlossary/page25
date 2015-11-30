@@ -2,8 +2,7 @@ var index = '';
 var data  = {};
 
 var enableClick = false;
-var shutterDone = false;
-var loadDone    = false;
+var loadDone, shutterDone;
 
 window.onpopstate = function (event) {
   if ( event.state ) { index = event.state.index; }
@@ -18,44 +17,34 @@ $(document).ready(function () {
 
   index = window.location.pathname.substring(1);
   tweakLabels($('figcaption').find('p'));
-  window.requestAnimationFrame(loading);
 
-  $('#image').on('animationend webkitAnimationEnd MSAnimationEnd oAnimationEnd',
-                 '.shutter',
-                 function () {
-    if (loadDone) { swap(index); }
-    else { shutterDone = true; }
+  $(document).on(
+    'animationend webkitAnimationEnd oAnimationEnd',
+    '.loading figcaption',
+    function () {
+      $('body').removeClass('loading');
+      enableClick = true;
+    }
+  );
+
+  // TODO: Change this functionality to delegated events rather than tracking
+  // state here
+  $('body').on('click', function () {
+    if (enableClick) {
+      getNext(++index, data);
+    }
   });
 
-  $('.new-photo').on('load', function () {
-    if (shutterDone) { swap(index); }
-    else { loadDone = true; }
-  });
+  $('body').on(
+    'animationend webkitAnimationEnd oAnimationEnd',
+    '.shutter #image',
+    function () {
+      if (loadDone) { swap(index); }
+      else { shutterDone = true; }
+    }
+  );
 
-  $('body').on('animationend webkitAnimationEnd MSAnimationEnd oAnimationEnd',
-               '.unshutter',
-               function () {
-    enableClick = true;
-    $('body').removeClass('disable');
-  });
 });
-
-function loading(timeStamp) {
-  if(timeStamp < 5000) window.requestAnimationFrame(loading);
-  else {
-    $('body').removeClass('loading');
-    enableClick = true;
-    $('body').on('click', handleClick);
-  }
-}
-
-// TODO: Change this functionality to delegated events rather than tracking
-// state here
-function handleClick() {
-  if(enableClick) {
-    getNext(++index, data);
-  }
-}
 
 function getNext (index, globalData) {
   $.ajax(
@@ -63,38 +52,46 @@ function getNext (index, globalData) {
     , url: index
     , dataType: 'json'
     , statusCode:
-        { 200: success
-        , 304: success
-        , 204: function (data, textStatus, jqXHR ) {
-            enableClick = false;
-            // do nothin'
-          }
+      { 200: success
+      , 304: success
+      , 204: function (data, textStatus, jqXHR ) {
+          enableClick = false;
+          // do nothin'
         }
+      }
     }
   );
   function success (data, textStatus, jqXHR ) {
-     globalData[index] = data;
-     window.history.pushState({index: index}, 'page25', '/' + index);
-     start = performance.now();
-     window.requestAnimationFrame(shutter);
-   };
+    globalData[index] = data;
+    window.history.pushState({index: index}, 'page25', '/' + index);
+    shutter();
+  };
 }
 
-function shutter (timeStamp) {
+function shutter () {
   enableClick = false;
   $('body').addClass('disable');
-  var img = $('<img src="' + data[index].image + '" class="new-photo" />');
-  $('#image').append(img);
-  $('figcaption, #image').addClass('shutter');
+
+  $('#image').imagesLoaded()
+  .done(function () {
+    if (shutterDone) { swap(index); }
+    else { loadDone = true; }
+  });
+
+  var img = $('<img class="new-photo" src="' + data[index].image + '" />');
+  $('.old-photo').after(img);
+  $('figure').addClass('shutter');
 }
 
-function swap (timeStamp) {
+function swap () {
   loadDone = false;
   shutterDone = false;
   $('.old-photo').remove();
-  $('.new-photo').addClass('old-photo').removeClass('new-photo');
+  $('.new-photo').removeClass('new-photo').addClass('old-photo');
   nextLabels(index);
-  $('#image, figcaption').addClass('unshutter').removeClass('shutter');
+  $('figure').removeClass('shutter');
+  $('body').removeClass('disable');
+  enableClick = true;
 }
 
 function nextLabels (index) {

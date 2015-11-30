@@ -4,17 +4,16 @@
 
   <% include ../partials/head.ejs %>
 
-  <style>
-    #image { background-image: url(<%= image %>); }
-  </style>
-
 </head>
 <body class="loading">
 
 <div id="bg">
 </div>
 <figure>
-  <div id="image"><img src="/images/1x1.png" /></div>
+  <div id="image">
+    <img class="old-photo"   src="<%= image %>"    />
+    <img class="placeholder" src="/images/1x1.png" />
+  </div>
   <figcaption>
     <% for (var i = 0; i < text.length; i++) { %>
       <p><span><%= text[i] %></span></p>
