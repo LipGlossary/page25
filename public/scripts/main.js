@@ -1,6 +1,8 @@
-var enableClick = false;
 var index = '';
-var data = {};
+var data  = {};
+
+var enableClick = false;
+var loadDone, shutterDone;
 
 window.onpopstate = function (event) {
   if ( event.state ) { index = event.state.index; }
@@ -11,61 +13,38 @@ window.onpopstate = function (event) {
   getNext(index, data);
 };
 
-var start;
-var fi = 0;  // frames index
-var frames =
-  [ { wait: 0
-    , func: function () {
-        enableClick = false;
-        $('body').addClass('disable');
-      }
-    }
-  , { wait: 0
-    , func: function () { $('figcaption').addClass('shutter'); }
-    }
-  , { wait: 500
-    , func: function () { $('#image').addClass('shutter'); }
-    }
-  , { wait: 1500
-    , func: function () {
-        nextImage(index);
-        nextLabels(index);
-      }
-    }
-  , { wait: 500,
-      func: function () { $('#image').removeClass('shutter'); }
-    }
-  , { wait: 500,
-      func: function () { $('figcaption').removeClass('shutter'); }
-    }
-  , { wait: 1500,
-      func: function () {
-        enableClick = true;
-        $('body').removeClass('disable');
-      }
-    }
-  ];
-
 $(document).ready(function () {
+
   index = window.location.pathname.substring(1);
   tweakLabels($('figcaption').find('p'));
-  window.requestAnimationFrame(loading);
+
+  $(document).on(
+    'animationend webkitAnimationEnd oAnimationEnd',
+    '.loading figcaption',
+    function () {
+      $('body').removeClass('loading');
+      enableClick = true;
+    }
+  );
+
+  // TODO: Change this functionality to delegated events rather than tracking
+  // state here
+  $('body').on('click', function () {
+    if (enableClick) {
+      getNext(++index, data);
+    }
+  });
+
+  $('body').on(
+    'animationend webkitAnimationEnd oAnimationEnd',
+    '.shutter #image',
+    function () {
+      if (loadDone) { swap(index); }
+      else { shutterDone = true; }
+    }
+  );
+
 });
-
-function loading(timeStamp) {
-  if(timeStamp < 5000) window.requestAnimationFrame(loading);
-  else {
-    $('body').removeClass('loading');
-    enableClick = true;
-    $('body').on('click', handleClick);
-  }
-}
-
-function handleClick() {
-  if(enableClick) {
-    getNext(++index, data);
-  }
-}
 
 function getNext (index, globalData) {
   $.ajax(
@@ -73,41 +52,46 @@ function getNext (index, globalData) {
     , url: index
     , dataType: 'json'
     , statusCode:
-        { 200: success
-        , 304: success
-        , 204: function (data, textStatus, jqXHR ) {
-            enableClick = false;
-            // do nothin'
-          }
+      { 200: success
+      , 304: success
+      , 204: function (data, textStatus, jqXHR ) {
+          enableClick = false;
+          // do nothin'
         }
+      }
     }
   );
   function success (data, textStatus, jqXHR ) {
-     globalData[index] = data;
-     window.history.pushState({index: index}, 'page25', `/${index}`);
-     start = performance.now();
-     window.requestAnimationFrame(playFrameQueue);
-   };
+    globalData[index] = data;
+    window.history.pushState({index: index}, 'page25', '/' + index);
+    shutter();
+  };
 }
 
-function playFrameQueue (timeStamp) {
-  var frame = frames[fi];
-  var wait = frame.wait;
-  if (timeStamp - start <= wait) window.requestAnimationFrame(playFrameQueue);
-  else {
-    frame.func();
-    if (frames[++fi]) {
-      start = timeStamp;
-      window.requestAnimationFrame(playFrameQueue);
-    }
-    else { fi = 0; }
-  }
-}
+function shutter () {
+  enableClick = false;
+  $('body').addClass('disable');
 
-function nextImage (index) {
-  $('#image').css({
-    'background-image': `url(${data[index].image})`
+  $('#image').imagesLoaded()
+  .done(function () {
+    if (shutterDone) { swap(index); }
+    else { loadDone = true; }
   });
+
+  var img = $('<img class="new-photo" src="' + data[index].image + '" />');
+  $('.old-photo').after(img);
+  $('figure').addClass('shutter');
+}
+
+function swap () {
+  loadDone = false;
+  shutterDone = false;
+  $('.old-photo').remove();
+  $('.new-photo').removeClass('new-photo').addClass('old-photo');
+  nextLabels(index);
+  $('figure').removeClass('shutter');
+  $('body').removeClass('disable');
+  enableClick = true;
 }
 
 function nextLabels (index) {
