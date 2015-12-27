@@ -10,7 +10,7 @@ window.onpopstate = function (event) {
     index = '100';
     window.history.pushState(null, 'page25', '/100');
   }
-  getNext(index, data);
+  shutter();
 };
 
 $(document).ready(function () {
